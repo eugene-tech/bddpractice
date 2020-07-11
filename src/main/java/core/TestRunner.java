@@ -20,6 +20,7 @@ public class TestRunner {
     @BeforeClass
     public static void methodBeforeClassIsLoaded() {
         CursSD.driver = SeleniumUtils.setUpDriver();
+        //test1
     }
 
     @AfterClass
