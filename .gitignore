@@ -1,0 +1,5 @@
+/target/
+.idea/*
+!.idea/codeStyles
+!.idea/dictionaries
+bddpractice.iml
