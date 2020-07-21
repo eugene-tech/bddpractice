@@ -9,12 +9,15 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import stepDefinitions.CursSD;
 
+
 import java.util.Optional;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/main/java/features", glue = "stepDefinitions"
-//    , tags = "@testTag" // uncomment this line to run
+   , tags = {"@langHeader,@langRates,@langConverter,@langExchangeRates,@langBank,@langCurrencies" +
+        ",@langExchangeOffices,@langCurrencies"}
 )
+
 public class TestRunner {
 
     @BeforeClass
@@ -25,5 +28,6 @@ public class TestRunner {
     @AfterClass
     public static void methodAfterExecutingIsDone() {
         Optional.ofNullable(CursSD.driver).ifPresent(WebDriver::quit);
+
     }
 }

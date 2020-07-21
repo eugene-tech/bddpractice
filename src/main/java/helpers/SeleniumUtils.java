@@ -39,7 +39,7 @@ public class SeleniumUtils {
     }
 
     public static WebDriver setUpDriver() {
-        System.setProperty("webdriver.chrome.driver", "F:/chromedriver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "D:/programs/chromedriver/chromedriver.exe");
         WebDriver driver = new ChromeDriver();
         log.info("Driver setup");
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
