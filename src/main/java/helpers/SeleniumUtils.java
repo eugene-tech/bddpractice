@@ -6,8 +6,10 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import properties.GeneralProperties;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class SeleniumUtils {
@@ -39,11 +41,15 @@ public class SeleniumUtils {
     }
 
     public static WebDriver setUpDriver() {
-        System.setProperty("webdriver.chrome.driver", "F:/chromedriver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver",
+                Objects.requireNonNull(SeleniumUtils.class.getClassLoader().getResource(GeneralProperties.chrome_driver)).getPath());
         WebDriver driver = new ChromeDriver();
+
         log.info("Driver setup");
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(Integer.parseInt(GeneralProperties.PageLoadTimeOut),
+                TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Integer.parseInt(GeneralProperties.ImplicitlyWait),
+                TimeUnit.SECONDS);
         driver.manage().window().maximize();
         if (seleniumUtils == null)
             seleniumUtils = new SeleniumUtils(driver);
@@ -53,4 +59,40 @@ public class SeleniumUtils {
     public static void clickJS(WebDriver driver, WebElement element) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
+
+    public static List<String> parseTextFromWebElementToCollection(List<WebElement> webElements, boolean sorted){
+        List<String> temp = new ArrayList<>();
+        for(WebElement element : webElements){
+            temp.add(element.getText());
+        }
+        //List<String> temp = webElements.stream().collect(ArrayList::new, (list, item) -> list.add(item.getText()), ArrayList::addAll);
+        //System.out.println("---------------------------");
+        //temp.forEach(v-> System.out.println(v+" AFTER COPY |"));
+        if(sorted){
+            Collections.sort(temp);
+            return temp;
+        }else {
+            return temp;
+        }
+    }
+
+    public static List<String> parseTextFromWebElementToCollection(List<WebElement> webElements,String attributeName,
+                                                                 boolean sorted){
+        List<String> temp = webElements.stream().collect(ArrayList::new, (list, item) -> list.add(item.getText()+" "+item.getAttribute(attributeName)), ArrayList::addAll);;
+        if(sorted){
+            Collections.sort(temp);
+            return temp;
+        }else {
+            return temp;
+        }
+    }
+
+    public WebDriver getDriver() {
+        return driver;
+    }
+
+    public static WebDriverWait getWaiter(WebDriver driver){
+        return new WebDriverWait(driver,30);
+    }
+
 }

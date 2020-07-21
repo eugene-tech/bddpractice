@@ -2,11 +2,15 @@ package core;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
+import helpers.FileManager;
+import helpers.HttpClient;
 import helpers.SeleniumUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import properties.GeneralProperties;
+import properties.LinksProperties;
 import stepDefinitions.CursSD;
 
 import java.util.Optional;
@@ -16,9 +20,27 @@ import java.util.Optional;
 //    , tags = "@testTag" // uncomment this line to run
 )
 public class TestRunner {
-
+    public static void initSteps() throws Exception {
+        System.out.println("Prestaging was started..");
+        //data setup & props parsing
+        LinksProperties.readProperty();
+        GeneralProperties.readProperty();
+        //get val curs from bnm and write to data file
+        HttpClient.initHttpTimeOutConnection(Integer.parseInt(GeneralProperties.HttpClientSocketTimeout),
+                Integer.parseInt(GeneralProperties.HttpClientConnectTimeout));
+        FileManager.writeToFile(HttpClient.get(LinksProperties.bnm_ro_official_exchange_link+GeneralProperties.date),
+                GeneralProperties.val_curs_data_file_location_ro);
+        FileManager.writeToFile(HttpClient.get(LinksProperties.bnm_ru_official_exchange_link+GeneralProperties.date),
+                GeneralProperties.val_curs_data_file_location_ru);
+        FileManager.writeToFile(HttpClient.get(LinksProperties.bnm_en_official_exchange_link+GeneralProperties.date),
+                GeneralProperties.val_curs_data_file_location_en);
+        System.out.println("Prestaging was ended..");
+    }
     @BeforeClass
-    public static void methodBeforeClassIsLoaded() {
+    public static void methodBeforeClassIsLoaded() throws Exception {
+
+        initSteps();
+
         CursSD.driver = SeleniumUtils.setUpDriver();
     }
 

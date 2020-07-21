@@ -1,14 +1,25 @@
 package POMs;
 
+import dto.ValCurs;
 import helpers.Config;
+import helpers.FileManager;
 import helpers.SeleniumUtils;
+import helpers.XMLParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.assertj.core.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import properties.XPathProperties;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CursMD extends AbstractPOM {
@@ -16,10 +27,19 @@ public class CursMD extends AbstractPOM {
     private static final Logger log = LogManager.getLogger(CursMD.class);
     private static final String SITE_URL = Config.getString("homepage.url");
 
+
     @FindBy(xpath = "//a[@id='language-select']")
     public WebElement languageBtn;
     @FindBy(xpath = "//a[@id='language-select']/following::ul[1]/li/a")
     public List<WebElement> languagesSelect;
+    @FindBy(xpath = "//button[@class='btn btn-dropdown dropdown-toggle']")
+    public WebElement currencyViBtn;
+    @FindBy(xpath = XPathProperties.currencyList)
+    public List<WebElement> currencyList;
+
+
+
+
 
     public CursMD(WebDriver driver) {
         super(driver);
@@ -51,4 +71,35 @@ public class CursMD extends AbstractPOM {
         log.info("Searching element with text <" + text + ">");
         return driver.findElement(By.xpath("//ul[contains(@class, 'navbar-nav')]//a[./span[text()='" + text + "']]"));
     }
+
+    public void openCurrencyList() {
+        log.info("Open currency list");
+        SeleniumUtils.getWaiter(SeleniumUtils.getInstance().getDriver())
+                .until(ExpectedConditions.elementToBeClickable(currencyViBtn)).click();
+
+    }
+
+    public void isCurrencyListCorrect(String lang) throws JAXBException, IOException {
+        ValCurs valCurs = (ValCurs)  XMLParser.parseXML(
+                FileManager.readFromFileBasedOnLang(lang),
+                ValCurs.class);
+
+        List<String> expectedResults = valCurs.getValute().stream()
+                .collect(ArrayList::new, (list, item)->list.add(item.getCharCode()+" - "+item.getName()), ArrayList::addAll);
+
+        //currencyList.forEach(v-> System.out.println(v.getText()+" ORIGINAL ELEMENT | "));
+
+        log.info("Checking main page currency list language...");
+        log.info("Actual -> "); SeleniumUtils.parseTextFromWebElementToCollection(currencyList,true).forEach(v-> System.out.print(v+" | "));
+        log.info("\n");
+
+        Collections.sort(expectedResults);
+        log.info("Expected -> "); expectedResults.forEach(v-> System.out.print(v+" | "));
+        log.info("\n");
+
+
+        Assertions.assertThat(SeleniumUtils.parseTextFromWebElementToCollection(currencyList,true)).isEqualTo(expectedResults);
+    }
+
+
 }

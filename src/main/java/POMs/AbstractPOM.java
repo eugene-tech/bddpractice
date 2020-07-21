@@ -7,7 +7,7 @@ public abstract class AbstractPOM {
 
     public WebDriver driver;
 
-    AbstractPOM(WebDriver driver) {
+    public AbstractPOM(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
     }
