@@ -16,7 +16,7 @@ public class XPathProperties {
     public static final String cash_operations_all_tabs = "//ul[@class='nav nav-pills menu-second-lvl']/li";
     //Currencies xpath
     //Exchange rates xpath
-    public static final String officialListRate ="//table[@id='tabelValute']//tbody//tr//td[contains(@class, 'cod')]//span";
+    public static final String officialListRate ="//table[@id='tabelValute']//tbody//tr//td[contains(@class, 'cod')]/span";
     public static final String exchangesRatesMenuOption ="//li[contains(@class,'page-curs_valutar_banci')]";
     public static final String officialExchangeRateTab ="//li[contains(@class,'page-curs_valutar/oficial')]";
     public static final String cashOperationsTab="//li[contains(@class,'page-curs_valutar/cash')]";

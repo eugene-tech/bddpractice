@@ -1,6 +1,8 @@
 package stepDefinitions;
 
 import POMs.CursMD;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -14,7 +16,7 @@ public class CurrencyFormatTest {
     private static CursMD cursMD;
 
     @Before
-    public void driverInit() {
+    public void clearCookie() {
         SeleniumUtils.getInstance().getDriver().manage().deleteAllCookies();
     }
 
@@ -39,5 +41,9 @@ public class CurrencyFormatTest {
         cursMD.isCurrencyListCorrect(lang);
     }
 
-
+    @After
+    public void closeDriver(Scenario sc) {
+        SeleniumUtils.getInstance().alert("Test " + sc.getStatus().toUpperCase() + ", driver will be closed in a few seconds.....");
+        //SeleniumUtils.sleep(2);
+    }
 }

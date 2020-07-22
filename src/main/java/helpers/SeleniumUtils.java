@@ -2,6 +2,7 @@ package helpers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -65,9 +66,6 @@ public class SeleniumUtils {
         for(WebElement element : webElements){
             temp.add(element.getText());
         }
-        //List<String> temp = webElements.stream().collect(ArrayList::new, (list, item) -> list.add(item.getText()), ArrayList::addAll);
-        //System.out.println("---------------------------");
-        //temp.forEach(v-> System.out.println(v+" AFTER COPY |"));
         if(sorted){
             Collections.sort(temp);
             return temp;
@@ -76,16 +74,7 @@ public class SeleniumUtils {
         }
     }
 
-    public static List<String> parseTextFromWebElementToCollection(List<WebElement> webElements,String attributeName,
-                                                                 boolean sorted){
-        List<String> temp = webElements.stream().collect(ArrayList::new, (list, item) -> list.add(item.getText()+" "+item.getAttribute(attributeName)), ArrayList::addAll);;
-        if(sorted){
-            Collections.sort(temp);
-            return temp;
-        }else {
-            return temp;
-        }
-    }
+
 
     public WebDriver getDriver() {
         return driver;

@@ -1,5 +1,7 @@
 package POMs;
 
+import POMs.Pages.ExchangeRates.ExchangeRates;
+import POMs.Pages.RatesEvolution;
 import dto.ValCurs;
 import helpers.Config;
 import helpers.FileManager;
@@ -12,9 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import properties.XPathProperties;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -34,15 +34,27 @@ public class CursMD extends AbstractPOM {
     public List<WebElement> languagesSelect;
     @FindBy(xpath = "//button[@class='btn btn-dropdown dropdown-toggle']")
     public WebElement currencyViBtn;
-    @FindBy(xpath = XPathProperties.currencyList)
+    @FindBy(xpath = "//div[@class='col-sm-6 conversion-param']//div[@class='chosen-drop']/ul/li")
     public List<WebElement> currencyList;
 
-
-
+    //other pages
+    private List<Page> allPages;
+    private ExchangeRates exchangeRatesPage;
+    private RatesEvolution ratesEvolutionPage;
 
 
     public CursMD(WebDriver driver) {
         super(driver);
+        exchangeRatesPage = new ExchangeRates(driver);
+        ratesEvolutionPage = new RatesEvolution(driver);
+    }
+
+    public ExchangeRates getExchangeRatesPage() {
+        return exchangeRatesPage;
+    }
+
+    public RatesEvolution getRatesEvolutionPage() {
+        return ratesEvolutionPage;
     }
 
     public static CursMD init(WebDriver driver) {
@@ -100,6 +112,8 @@ public class CursMD extends AbstractPOM {
 
         Assertions.assertThat(SeleniumUtils.parseTextFromWebElementToCollection(currencyList,true)).isEqualTo(expectedResults);
     }
+
+
 
 
 }
