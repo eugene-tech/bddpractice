@@ -98,8 +98,10 @@ public class CursMD extends AbstractPOM {
 
     public void openCurrencyList() {
         log.info("Open currency list");
+        SeleniumUtils.sleep(1);
         SeleniumUtils.getWaiter(SeleniumUtils.getInstance().getDriver())
                 .until(ExpectedConditions.elementToBeClickable(currencyViBtn)).click();
+        SeleniumUtils.sleep(2);
 
     }
 

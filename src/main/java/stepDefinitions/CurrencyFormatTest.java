@@ -18,18 +18,8 @@ public class CurrencyFormatTest {
     @Before
     public void clearCookie() {
         SeleniumUtils.getInstance().getDriver().manage().deleteAllCookies();
+        cursMD = new CursMD(SeleniumUtils.getInstance().getDriver());
     }
-
-    @Given("^Main page is opened$")
-    public void mainPageIsOpened() {
-        cursMD = CursMD.init(SeleniumUtils.getInstance().getDriver());
-    }
-
-    @When("^Page language was changed on '(.*)'$")
-    public void pageLanguageWasChangedOnLang(String language) {
-        cursMD.changeLanguage(language);
-    }
-
 
     @Then("^Open currency list$")
     public void openCurrencyList() {

@@ -1,8 +1,8 @@
 Feature: Menu options language
   #@testTag
   Scenario Outline: Menu options language (#REQ-104)
-    Given Main page is opened
-    When  Page language was changed on '<lang>'
+    Given main page is opened
+    When  user changes language to '<lang>'
     Then  We should click on '<menu>' option and check if '<pageTabHeader>' and '<tabPage>' was translated correctly
     Examples:
       | lang    | menu                                                  | tabPage                                                                                                                                             |pageTabHeader                                                                                                                                             |
