@@ -1,8 +1,12 @@
 package helpers;
 
+import core.TestRunner;
 import kong.unirest.Unirest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HttpClient {
+    private static final Logger log = LogManager.getLogger(HttpClient.class);
     public static void initHttpTimeOutConnection(int socketTimeOut,int connectTimeout){
         Unirest.config()
                 .socketTimeout(socketTimeOut)
@@ -10,6 +14,7 @@ public class HttpClient {
     }
 
     public static String get(String url){
+        log.info("Execute get request on "+url);
         return Unirest.get(url).asString().getBody();
     }
 

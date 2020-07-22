@@ -1,10 +1,13 @@
 package core;
 
+import POMs.CursMD;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import helpers.FileManager;
 import helpers.HttpClient;
 import helpers.SeleniumUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -20,8 +23,9 @@ import java.util.Optional;
 //    , tags = "@testTag" // uncomment this line to run
 )
 public class TestRunner {
+    private static final Logger log = LogManager.getLogger(TestRunner.class);
     public static void initSteps() throws Exception {
-        System.out.println("Prestaging was started..");
+        log.info("Prestaging was started..");
         //data setup & props parsing
         LinksProperties.readProperty();
         GeneralProperties.readProperty();
@@ -34,7 +38,7 @@ public class TestRunner {
                 GeneralProperties.val_curs_data_file_location_ru);
         FileManager.writeToFile(HttpClient.get(LinksProperties.bnm_en_official_exchange_link+GeneralProperties.date),
                 GeneralProperties.val_curs_data_file_location_en);
-        System.out.println("Prestaging was ended..");
+        log.info("Prestaging was ended..");
     }
     @BeforeClass
     public static void methodBeforeClassIsLoaded() throws Exception {

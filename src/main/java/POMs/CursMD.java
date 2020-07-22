@@ -1,5 +1,8 @@
 package POMs;
 
+import POMs.Pages.Banks;
+import POMs.Pages.Currencies;
+import POMs.Pages.ExchangeOffices;
 import POMs.Pages.ExchangeRates.ExchangeRates;
 import POMs.Pages.RatesEvolution;
 import dto.ValCurs;
@@ -41,12 +44,19 @@ public class CursMD extends AbstractPOM {
     private List<Page> allPages;
     private ExchangeRates exchangeRatesPage;
     private RatesEvolution ratesEvolutionPage;
+    private Banks banks;
+    private Currencies currencies;
+    private ExchangeOffices exchangeOffices;
+
 
 
     public CursMD(WebDriver driver) {
         super(driver);
         exchangeRatesPage = new ExchangeRates(driver);
         ratesEvolutionPage = new RatesEvolution(driver);
+        banks = new Banks(driver);
+        currencies = new Currencies(driver);
+        exchangeOffices = new ExchangeOffices(driver);
     }
 
     public ExchangeRates getExchangeRatesPage() {
@@ -65,6 +75,7 @@ public class CursMD extends AbstractPOM {
     }
 
     public void changeLanguage(String language) {
+
         if (languageBtn.getText().trim().equals(language)) {
             log.warn("Language <" + language + "> already set!");
         } else {
@@ -76,6 +87,7 @@ public class CursMD extends AbstractPOM {
                     .filter(x -> x.getText().contains(language))
                     .findFirst().orElseThrow(() -> new IllegalArgumentException("Language <" + language + "> not found!")));
             SeleniumUtils.sleep(3);
+
         }
     }
 
@@ -99,7 +111,7 @@ public class CursMD extends AbstractPOM {
         List<String> expectedResults = valCurs.getValute().stream()
                 .collect(ArrayList::new, (list, item)->list.add(item.getCharCode()+" - "+item.getName()), ArrayList::addAll);
 
-        //currencyList.forEach(v-> System.out.println(v.getText()+" ORIGINAL ELEMENT | "));
+
 
         log.info("Checking main page currency list language...");
         log.info("Actual -> "); SeleniumUtils.parseTextFromWebElementToCollection(currencyList,true).forEach(v-> System.out.print(v+" | "));
@@ -114,6 +126,29 @@ public class CursMD extends AbstractPOM {
     }
 
 
+    public List<Page> getAllPages(){
+        List<Page> allPages = new ArrayList<>();
+        allPages.add(exchangeRatesPage);
+        allPages.add(ratesEvolutionPage);
+        allPages.add(banks);
+        allPages.add(currencies);
+        allPages.add(exchangeOffices);
+        return allPages;
+    }
+
+    public void checkAllPagesLanguage(List<String> menuExpected,List<String> pageTabHeader,List<String> pageTitle){
+        getAllPages().forEach(pages->{
+            if(!(pages instanceof ExchangeRates)) {
+                log.info("Clicked on this menu option -> " + pages.getMenuTitle());
+                pages.openThisPage();
+                Assertions.assertThat(pageTitle).contains(pages.getTitle().trim());
+                Assertions.assertThat(pageTabHeader).contains(pages.getPageHeader().trim());
+                Assertions.assertThat(menuExpected).contains(pages.getMenuTitle().trim());
+                log.info("Page tab header -> " + pages.getPageHeader() + " | Menu name -> " + pages.getMenuTitle() +
+                        " and PAGE TITLE  -> " + pages.getTitle() + " was successfully translated");
+            }
+        });
+    }
 
 
 }

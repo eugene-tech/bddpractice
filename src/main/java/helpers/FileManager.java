@@ -3,19 +3,25 @@ package helpers;
 
 
 import enums.Language;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 
 public class FileManager {
+    private static final Logger log = LogManager.getLogger(HttpClient.class);
     public static void writeToFile(String content, String filePath) throws IOException {
-        BufferedWriter myWriter = new BufferedWriter(new FileWriter(filePath));
-
+        File file = new File(filePath);
+        log.info("Started write to -> "+file.getName());
+        BufferedWriter myWriter = new BufferedWriter(new FileWriter(file));
         myWriter.write(content);
         myWriter.close();
     }
 
     public static String  readFromFile(String filePath) throws IOException {
-        BufferedReader myReader = new BufferedReader(new FileReader(filePath));
+        File file = new File(filePath);
+        log.info("Started read from file -> "+file.getName());
+        BufferedReader myReader = new BufferedReader(new FileReader(file));
         StringBuilder result = new StringBuilder();
         String line;
         while((line = myReader.readLine() )!= null){

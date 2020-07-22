@@ -7,15 +7,14 @@ import org.assertj.core.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import properties.XPathProperties;
 
 public class RatesEvolution extends AbstractPOM implements Page {
     private WebDriver driver;
 
-    @FindBy(xpath = XPathProperties.rates_evolution_menu_option)
-    public  WebElement rates_evolution_menu_option;
-    @FindBy(xpath = XPathProperties.rates_evolution_page_header)
-    public  WebElement rates_evolution_page_header;
+    @FindBy(xpath = "//li[contains(@class,'page-grafic_evolutii')]")
+    public  WebElement ratesEvolutionMenuOption;
+    @FindBy(xpath = "//div[@id='graficEvolutie']/h1")
+    public  WebElement ratesEvolutionPageHeader;
 
 
     public RatesEvolution(WebDriver driver) {
@@ -25,8 +24,8 @@ public class RatesEvolution extends AbstractPOM implements Page {
 
     @Override
     public void openThisPage() {
-        if(rates_evolution_menu_option.isDisplayed())
-            rates_evolution_menu_option.click();
+        if(ratesEvolutionMenuOption.isDisplayed())
+            ratesEvolutionMenuOption.click();
     }
 
     @Override
@@ -41,12 +40,12 @@ public class RatesEvolution extends AbstractPOM implements Page {
 
     @Override
     public String getMenuTitle(){
-        return rates_evolution_menu_option.getText();
+        return ratesEvolutionMenuOption.getText();
     }
 
     @Override
     public String getPageHeader(){
-        return rates_evolution_page_header.getText();
+        return ratesEvolutionPageHeader.getText();
     }
 
 

@@ -13,13 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import properties.XPathProperties;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ExchangeRates extends AbstractPOM implements Page {
     private WebDriver driver;
