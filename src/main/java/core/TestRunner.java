@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/main/java/features", glue = "stepDefinitions"
-//    , tags = "@testTag" // uncomment this line to run
+    , tags = "@testTag" // uncomment this line to run
 )
 public class TestRunner {
     private static final Logger log = LogManager.getLogger(TestRunner.class);

@@ -12,9 +12,9 @@ public class ExchangeOffices extends AbstractPOM implements Page {
     private WebDriver driver;
 
     @FindBy(xpath = "//li[contains(@class,'page-lista_csv')]/a")
-    public WebElement exchangeOfficiesMenuOption;
+    private WebElement exchangeOfficiesMenuOption;
     @FindBy(xpath = "//div[@id='bankBox']/h1")
-    public  WebElement exchangeOfficiesPageHeader;
+    private  WebElement exchangeOfficiesPageHeader;
 
 
     public ExchangeOffices(WebDriver driver) {

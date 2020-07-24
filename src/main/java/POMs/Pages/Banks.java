@@ -12,9 +12,9 @@ public class Banks extends AbstractPOM implements Page {
     private WebDriver driver;
 
     @FindBy(xpath = "//li[contains(@class,'page-lista_banci')]/a")
-    public WebElement banksMenuOption;
+    private WebElement banksMenuOption;
     @FindBy(xpath = "//div[@id='bankBox']/h1")
-    public  WebElement banksPageHeader;
+    private  WebElement banksPageHeader;
 
 
     public Banks(WebDriver driver) {

@@ -6,10 +6,7 @@ import POMs.Pages.ExchangeOffices;
 import POMs.Pages.ExchangeRates.ExchangeRates;
 import POMs.Pages.RatesEvolution;
 import dto.ValCurs;
-import helpers.Config;
-import helpers.FileManager;
-import helpers.SeleniumUtils;
-import helpers.XMLParser;
+import helpers.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.assertj.core.api.Assertions;
@@ -18,27 +15,43 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import properties.LinksProperties;
+import sun.reflect.generics.tree.Wildcard;
 
+import javax.swing.text.html.HTML;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class CursMD extends AbstractPOM {
-
+    private String currentCode;
+    private String currentSum;
     private static final Logger log = LogManager.getLogger(CursMD.class);
     private static final String SITE_URL = Config.getString("homepage.url");
 
 
     @FindBy(xpath = "//a[@id='language-select']")
-    public WebElement languageBtn;
+    private WebElement languageBtn;
     @FindBy(xpath = "//a[@id='language-select']/following::ul[1]/li/a")
-    public List<WebElement> languagesSelect;
+    private List<WebElement> languagesSelect;
     @FindBy(xpath = "//button[@class='btn btn-dropdown dropdown-toggle']")
-    public WebElement currencyViBtn;
+    private WebElement currencyViBtn;
     @FindBy(xpath = "//div[@class='col-sm-6 conversion-param']//div[@class='chosen-drop']/ul/li")
-    public List<WebElement> currencyList;
+    private List<WebElement> currencyList;
+    @FindBy(xpath = "//div[contains(@class,'conversion-param')]")
+    private WebElement blockForExchangeFROM;
+    @FindBy(xpath = "//div[contains(@class,'ref-suggestions')]")
+    private WebElement blockForExchangeTO;
+    @FindBy(xpath = "//div[@class='input-group date param-lbl']//input")
+    private WebElement currentDate;
+
 
     //other pages
     private List<Page> allPages;
@@ -152,5 +165,67 @@ public class CursMD extends AbstractPOM {
         });
     }
 
+    public WebElement getInputBlockForExchangeFROM() {
+        return blockForExchangeFROM.findElement(By.xpath(".//div[@class='input-group']/input"));
+    }
 
+    public WebElement getInputBlockForExchangeTO() {
+        return blockForExchangeTO.findElement(By.xpath(".//div[@class='input-group']/input"));
+    }
+
+    public List<WebElement> getCharCodesFromBlockForExchangeFROM() {
+        return blockForExchangeFROM.findElements(By.xpath(".//div[@class='btn-group']/button"));
+    }
+
+    public List<WebElement> getCharCodesFromBlockForExchangeTO() {
+        return blockForExchangeTO.findElements(By.xpath(".//div[@class='btn-group']/button"));
+    }
+
+    public void sendRandomSumForExchange(String sum) {
+        currentSum = WildcardUtil.processDouble(sum);
+        getInputBlockForExchangeFROM().sendKeys(currentSum);
+    }
+
+    public void selectCurrencyCode(String code1) {
+        WebElement codeToSwitch = getCharCodesFromBlockForExchangeFROM()
+            .stream()
+            .filter(code->code.getText().equals(code1))
+            .findFirst().get();
+        currentCode = codeToSwitch.getText();
+        codeToSwitch.click();
+    }
+
+    public void checkSumExchange(List<String> code2) throws ParseException, JAXBException {
+
+        ValCurs valCurs = ConversionManager.getValCursByDate(ConversionManager.parseDateFromWebElement(currentDate));
+
+        getCharCodesFromBlockForExchangeTO().stream().forEach(code->{
+            if(code2.contains(code.getText())){
+                code.click();
+                SeleniumUtils.sleep(1);
+                //sum conversion check
+                log.info("<--- "+currentSum+" "+currentCode+" to "+code.getText()+" --->");
+                if (currentCode.equals("MDL")) {
+                     ConversionManager.checkConversionFromMDL(getInputBlockForExchangeTO(),
+                             valCurs,
+                             currentSum,
+                             code, log);
+
+                } else if(code.getText().equals("MDL")){
+                    ConversionManager.checkConversionToMDL(getInputBlockForExchangeTO(),
+                            valCurs,
+                            currentSum,
+                            currentCode,
+                            log);
+                }else{
+                    ConversionManager.checkConversion(getInputBlockForExchangeTO(),
+                            valCurs,
+                            currentSum,
+                            currentCode,
+                            code, log);
+                }
+            }
+        });
+
+    }
 }

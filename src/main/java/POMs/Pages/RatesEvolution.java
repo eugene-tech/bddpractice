@@ -12,9 +12,9 @@ public class RatesEvolution extends AbstractPOM implements Page {
     private WebDriver driver;
 
     @FindBy(xpath = "//li[contains(@class,'page-grafic_evolutii')]")
-    public  WebElement ratesEvolutionMenuOption;
+    private  WebElement ratesEvolutionMenuOption;
     @FindBy(xpath = "//div[@id='graficEvolutie']/h1")
-    public  WebElement ratesEvolutionPageHeader;
+    private  WebElement ratesEvolutionPageHeader;
 
 
     public RatesEvolution(WebDriver driver) {

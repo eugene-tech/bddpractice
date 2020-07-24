@@ -12,9 +12,9 @@ public class Currencies extends AbstractPOM implements Page {
     private WebDriver driver;
 
     @FindBy(xpath = "//li[contains(@class,'page-lista_valute')]/a")
-    public WebElement currenciesMenuOption;
+    private WebElement currenciesMenuOption;
     @FindBy(xpath = "//div[@id='content']/div[@class='container']/div/div[1]/h1")
-    public  WebElement currenciesPageHeader;
+    private  WebElement currenciesPageHeader;
 
 
     public Currencies(WebDriver driver) {
