@@ -1,5 +1,5 @@
 Feature: Exchange Rates
-  @testTag
+  #@testTag
   Scenario Outline: Exchange Rates (#REQ-200)
     Given main page is opened
     When  user send '<sum>' for exchange

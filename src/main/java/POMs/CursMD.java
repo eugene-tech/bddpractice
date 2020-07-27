@@ -7,9 +7,12 @@ import POMs.Pages.ExchangeRates.ExchangeRates;
 import POMs.Pages.RatesEvolution;
 import dto.ValCurs;
 import helpers.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -36,7 +39,6 @@ public class CursMD extends AbstractPOM {
     private static final Logger log = LogManager.getLogger(CursMD.class);
     private static final String SITE_URL = Config.getString("homepage.url");
 
-
     @FindBy(xpath = "//a[@id='language-select']")
     private WebElement languageBtn;
     @FindBy(xpath = "//a[@id='language-select']/following::ul[1]/li/a")
@@ -51,7 +53,8 @@ public class CursMD extends AbstractPOM {
     private WebElement blockForExchangeTO;
     @FindBy(xpath = "//div[@class='input-group date param-lbl']//input")
     private WebElement currentDate;
-
+    @FindBy(xpath = "//input[@class='chosen-search-input']")
+    private WebElement currencyMainPageSearchInput;
 
     //other pages
     private List<Page> allPages;
@@ -60,8 +63,6 @@ public class CursMD extends AbstractPOM {
     private Banks banks;
     private Currencies currencies;
     private ExchangeOffices exchangeOffices;
-
-
 
     public CursMD(WebDriver driver) {
         super(driver);
@@ -100,7 +101,6 @@ public class CursMD extends AbstractPOM {
                     .filter(x -> x.getText().contains(language))
                     .findFirst().orElseThrow(() -> new IllegalArgumentException("Language <" + language + "> not found!")));
             SeleniumUtils.sleep(3);
-
         }
     }
 
@@ -115,33 +115,30 @@ public class CursMD extends AbstractPOM {
         SeleniumUtils.getWaiter(SeleniumUtils.getInstance().getDriver())
                 .until(ExpectedConditions.elementToBeClickable(currencyViBtn)).click();
         SeleniumUtils.sleep(2);
-
     }
 
     public void isCurrencyListCorrect(String lang) throws JAXBException, IOException {
-        ValCurs valCurs = (ValCurs)  XMLParser.parseXML(
+        ValCurs valCurs = (ValCurs) XMLParser.parseXML(
                 FileManager.readFromFileBasedOnLang(lang),
                 ValCurs.class);
 
         List<String> expectedResults = valCurs.getValute().stream()
-                .collect(ArrayList::new, (list, item)->list.add(item.getCharCode()+" - "+item.getName()), ArrayList::addAll);
-
-
+                .collect(ArrayList::new, (list, item) -> list.add(item.getCharCode() + " - " + item.getName()), ArrayList::addAll);
 
         log.info("Checking main page currency list language...");
-        log.info("Actual -> "); SeleniumUtils.parseTextFromWebElementToCollection(currencyList,true).forEach(v-> System.out.print(v+" | "));
+        log.info("Actual -> ");
+        SeleniumUtils.parseTextFromWebElementToCollection(currencyList, true).forEach(v -> System.out.print(v + " | "));
         log.info("\n");
 
         Collections.sort(expectedResults);
-        log.info("Expected -> "); expectedResults.forEach(v-> System.out.print(v+" | "));
+        log.info("Expected -> ");
+        expectedResults.forEach(v -> System.out.print(v + " | "));
         log.info("\n");
 
-
-        Assertions.assertThat(SeleniumUtils.parseTextFromWebElementToCollection(currencyList,true)).isEqualTo(expectedResults);
+        Assertions.assertThat(SeleniumUtils.parseTextFromWebElementToCollection(currencyList, true)).isEqualTo(expectedResults);
     }
 
-
-    public List<Page> getAllPages(){
+    public List<Page> getAllPages() {
         List<Page> allPages = new ArrayList<>();
         allPages.add(exchangeRatesPage);
         allPages.add(ratesEvolutionPage);
@@ -151,9 +148,9 @@ public class CursMD extends AbstractPOM {
         return allPages;
     }
 
-    public void checkAllPagesLanguage(List<String> menuExpected,List<String> pageTabHeader,List<String> pageTitle){
-        getAllPages().forEach(pages->{
-            if(!(pages instanceof ExchangeRates)) {
+    public void checkAllPagesLanguage(List<String> menuExpected, List<String> pageTabHeader, List<String> pageTitle) {
+        getAllPages().forEach(pages -> {
+            if (!(pages instanceof ExchangeRates)) {
                 log.info("Clicked on this menu option -> " + pages.getMenuTitle());
                 pages.openThisPage();
                 Assertions.assertThat(pageTitle).contains(pages.getTitle().trim());
@@ -188,9 +185,9 @@ public class CursMD extends AbstractPOM {
 
     public void selectCurrencyCode(String code1) {
         WebElement codeToSwitch = getCharCodesFromBlockForExchangeFROM()
-            .stream()
-            .filter(code->code.getText().equals(code1))
-            .findFirst().get();
+                .stream()
+                .filter(code -> code.getText().equals(code1))
+                .findFirst().get();
         currentCode = codeToSwitch.getText();
         codeToSwitch.click();
     }
@@ -199,25 +196,24 @@ public class CursMD extends AbstractPOM {
 
         ValCurs valCurs = ConversionManager.getValCursByDate(ConversionManager.parseDateFromWebElement(currentDate));
 
-        getCharCodesFromBlockForExchangeTO().stream().forEach(code->{
-            if(code2.contains(code.getText())){
+        getCharCodesFromBlockForExchangeTO().stream().forEach(code -> {
+            if (code2.contains(code.getText())) {
                 code.click();
                 SeleniumUtils.sleep(1);
                 //sum conversion check
-                log.info("<--- "+currentSum+" "+currentCode+" to "+code.getText()+" --->");
+                log.info("<--- " + currentSum + " " + currentCode + " to " + code.getText() + " --->");
                 if (currentCode.equals("MDL")) {
-                     ConversionManager.checkConversionFromMDL(getInputBlockForExchangeTO(),
-                             valCurs,
-                             currentSum,
-                             code, log);
-
-                } else if(code.getText().equals("MDL")){
+                    ConversionManager.checkConversionFromMDL(getInputBlockForExchangeTO(),
+                            valCurs,
+                            currentSum,
+                            code, log);
+                } else if (code.getText().equals("MDL")) {
                     ConversionManager.checkConversionToMDL(getInputBlockForExchangeTO(),
                             valCurs,
                             currentSum,
                             currentCode,
                             log);
-                }else{
+                } else {
                     ConversionManager.checkConversion(getInputBlockForExchangeTO(),
                             valCurs,
                             currentSum,
@@ -226,6 +222,34 @@ public class CursMD extends AbstractPOM {
                 }
             }
         });
+    }
 
+    public void sendAnySymbolsToSearchInput(String symbols) {
+        String symbol = WildcardUtil.processSymbols(symbols);
+        log.info("Sending these symbols -> " + symbol);
+        SeleniumUtils.getWaiter(driver).until(ExpectedConditions.visibilityOf(currencyMainPageSearchInput)).sendKeys(symbol);
+    }
+
+    public void isResultsContainTheSymbols() {
+        String symbols = SeleniumUtils.getWaiter(driver)
+                .until(ExpectedConditions.visibilityOf(currencyMainPageSearchInput)).getAttribute("value");
+        log.info("Checking if search results contain these symbols -> " + symbols);
+
+        currencyList.stream().forEach(webElement -> {
+            log.info("Expected that -> " + webElement.getText() + " | contains these symbols -> " + symbols);
+            Assert.assertTrue(StringUtils.containsIgnoreCase(webElement.getText(), symbols));
+        });
+    }
+
+    public void isResultsInvalid(){
+        String symbols = SeleniumUtils.getWaiter(driver)
+                .until(ExpectedConditions.visibilityOf(currencyMainPageSearchInput)).getAttribute("value");
+        log.info("Checking if search is invalid by this pattern “No results match <Search symbol>”");
+
+        currencyList.stream().forEach(webElement -> {
+            log.info("Expected search results | No results match " + symbols);
+            log.info("Actual search results | " + webElement.getText());
+            Assertions.assertThat(webElement.getText()).isEqualTo("No results match "+symbols);
+        });
     }
 }

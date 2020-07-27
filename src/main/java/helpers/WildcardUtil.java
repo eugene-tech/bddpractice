@@ -16,6 +16,15 @@ public class WildcardUtil {
         return WILDCARDS_RANDOM.contains(value) ? getRandomDouble() : value;
     }
 
+    public static String processSymbols(String anySymbol) {
+        return WILDCARDS_RANDOM.contains(anySymbol) ? getRandomSymbol() : anySymbol;
+    }
+
+    private static String getRandomSymbol() {
+        char c = (char) (RANDOM.nextInt(26) + 'a');
+        return String.valueOf(c);
+    }
+
     private static String getRandomDouble() {
         return String.format("%.2f", MIN + RANDOM.nextDouble() * MAX);
     }
