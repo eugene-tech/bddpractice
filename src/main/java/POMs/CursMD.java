@@ -241,7 +241,7 @@ public class CursMD extends AbstractPOM {
         });
     }
 
-    public void isResultsInvalid(){
+    public void isResultsInvalid() {
         String symbols = SeleniumUtils.getWaiter(driver)
                 .until(ExpectedConditions.visibilityOf(currencyMainPageSearchInput)).getAttribute("value");
         log.info("Checking if search is invalid by this pattern “No results match <Search symbol>”");
@@ -249,7 +249,8 @@ public class CursMD extends AbstractPOM {
         currencyList.stream().forEach(webElement -> {
             log.info("Expected search results | No results match " + symbols);
             log.info("Actual search results | " + webElement.getText());
-            Assertions.assertThat(webElement.getText()).isEqualTo("No results match "+symbols);
+            Assertions.assertThat(webElement.getText()).isEqualTo("No results match " + symbols);
         });
     }
+
 }

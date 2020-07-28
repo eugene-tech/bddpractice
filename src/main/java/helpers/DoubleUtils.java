@@ -25,5 +25,12 @@ public class DoubleUtils {
         return df.format(value);
     }
 
+    public static String getDecimalWithDefaultFormat(double value){
+        DecimalFormat df=new DecimalFormat("0.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setMinimumFractionDigits(4);
+        return df.format(value);
+    }
+
 
 }

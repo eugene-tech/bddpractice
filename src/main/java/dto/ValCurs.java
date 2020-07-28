@@ -23,5 +23,12 @@ public class ValCurs {
         return Valute;
     }
 
+    public double getValueBaseOnCharCode(String charCode){
+        return getValute().stream().filter(val->val.getCharCode()
+                .equals(charCode))
+                .findFirst().get().getValue();
+    }
+
+
 
 }

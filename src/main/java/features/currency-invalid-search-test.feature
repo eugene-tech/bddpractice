@@ -1,5 +1,5 @@
 Feature: Main page Invalid Сurrency Search
-  @testTag
+  #@testTag
   Scenario Outline: Invalid Сurrency Search (#REQ-301)
     Given main page is opened
     When  user open currency list

@@ -1,5 +1,5 @@
 Feature: Main page Сurrency Search
-  @testTag
+  #@testTag
   Scenario Outline: Сurrency Search (#REQ-300)
     Given main page is opened
     When  user open currency list
