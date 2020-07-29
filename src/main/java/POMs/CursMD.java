@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -183,7 +184,7 @@ public class CursMD extends AbstractPOM {
         getInputBlockForExchangeFROM().sendKeys(currentSum);
     }
 
-    public void selectCurrencyCode(String code1) {
+    public void selectCurrencyCodeFROM(String code1) {
         WebElement codeToSwitch = getCharCodesFromBlockForExchangeFROM()
                 .stream()
                 .filter(code -> code.getText().equals(code1))
@@ -192,8 +193,16 @@ public class CursMD extends AbstractPOM {
         codeToSwitch.click();
     }
 
-    public void checkSumExchange(List<String> code2) throws ParseException, JAXBException {
+    public void selectCurrencyCodeTO(String code2) {
+        WebElement codeToSwitch = getCharCodesFromBlockForExchangeTO()
+                .stream()
+                .filter(code -> code.getText().equals(code2))
+                .findFirst().get();
+        currentCode = codeToSwitch.getText();
+        codeToSwitch.click();
+    }
 
+    public void checkSumExchange(List<String> code2) throws ParseException, JAXBException {
         ValCurs valCurs = ConversionManager.getValCursByDate(ConversionManager.parseDateFromWebElement(currentDate));
 
         getCharCodesFromBlockForExchangeTO().stream().forEach(code -> {
@@ -206,7 +215,7 @@ public class CursMD extends AbstractPOM {
                     ConversionManager.checkConversionFromMDL(getInputBlockForExchangeTO(),
                             valCurs,
                             currentSum,
-                            code, log);
+                            code.getText(), log);
                 } else if (code.getText().equals("MDL")) {
                     ConversionManager.checkConversionToMDL(getInputBlockForExchangeTO(),
                             valCurs,
@@ -218,7 +227,7 @@ public class CursMD extends AbstractPOM {
                             valCurs,
                             currentSum,
                             currentCode,
-                            code, log);
+                            code.getText(), log);
                 }
             }
         });
@@ -253,4 +262,7 @@ public class CursMD extends AbstractPOM {
         });
     }
 
+    public WebElement getCurrentDate() {
+        return SeleniumUtils.getWaiter(driver).until(ExpectedConditions.visibilityOf(currentDate));
+    }
 }

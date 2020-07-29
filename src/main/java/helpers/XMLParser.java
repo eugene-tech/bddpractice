@@ -7,9 +7,13 @@ import java.io.StringReader;
 
 public class XMLParser {
 
-    public static Object parseXML(String xml, Class obj) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(obj);
-        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        return unmarshaller.unmarshal(new StringReader(xml));
+    public static Object parseXML(String xml, Class obj) {
+        try {
+            JAXBContext jc = JAXBContext.newInstance(obj);
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            return unmarshaller.unmarshal(new StringReader(xml));
+        } catch (JAXBException exception) {
+            return null;
+        }
     }
 }

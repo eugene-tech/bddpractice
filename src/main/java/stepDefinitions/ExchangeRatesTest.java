@@ -26,7 +26,7 @@ public class ExchangeRatesTest {
 
     @And("^user select currency code for exchange from '(.*)'$")
     public void userSelectCurrencyForExchangeFromCode(String code1) {
-        cursMD.selectCurrencyCode(code1);
+        cursMD.selectCurrencyCodeFROM(code1);
     }
 
 

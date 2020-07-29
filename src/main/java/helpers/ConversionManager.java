@@ -29,13 +29,13 @@ public class ConversionManager {
     }
 
     public static void checkConversionFromMDL(WebElement InputBlockForExchangeTO, ValCurs valCurs,
-                                              String currentInputSum, WebElement code,
+                                              String currentInputSum, String code,
                                               Logger log) {
 
         String currentOutputValue = InputBlockForExchangeTO.getAttribute("value").replaceAll(" ", "");
         double currentInputSumDouble = DoubleUtils.getDoubleWithReplacement(currentInputSum);
 
-        double exchangeRate = Optional.ofNullable(valCurs).get().getValueBaseOnCharCode(code.getText());
+        double exchangeRate = Optional.ofNullable(valCurs).get().getValueBaseOnCharCode(code);
 
         String expectedResult = DoubleUtils.getDecimalWithFormat(currentInputSumDouble / exchangeRate, "#.##",
                 RoundingMode.HALF_UP);
@@ -46,14 +46,14 @@ public class ConversionManager {
     }
 
     public static void checkConversion(WebElement inputBlockForExchangeTO, ValCurs valCurs, String currentInputSum,
-                                       String code1, WebElement code2, Logger log) {
+                                       String code1, String code2, Logger log) {
 
         String currentOutputValue = inputBlockForExchangeTO.getAttribute("value").replaceAll(" ", "");
         double currentInputSumDouble = DoubleUtils.getDoubleWithReplacement(currentInputSum);
 
         double exchangeInputRate = Optional.ofNullable(valCurs).get().getValueBaseOnCharCode(code1);
 
-        double exchangeOutRate = Optional.ofNullable(valCurs).get().getValueBaseOnCharCode(code2.getText());
+        double exchangeOutRate = Optional.ofNullable(valCurs).get().getValueBaseOnCharCode(code2);
 
         double ratio = exchangeInputRate / exchangeOutRate;
 

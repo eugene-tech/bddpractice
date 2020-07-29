@@ -61,27 +61,28 @@ public class SeleniumUtils {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
-    public static List<String> parseTextFromWebElementToCollection(List<WebElement> webElements, boolean sorted){
+    public static List<String> parseTextFromWebElementToCollection(List<WebElement> webElements, boolean sorted) {
         List<String> temp = new ArrayList<>();
-        for(WebElement element : webElements){
+        for (WebElement element : webElements) {
             temp.add(element.getText());
         }
-        if(sorted){
+        if (sorted) {
             Collections.sort(temp);
             return temp;
-        }else {
+        } else {
             return temp;
         }
     }
-
-
 
     public WebDriver getDriver() {
         return driver;
     }
 
-    public static WebDriverWait getWaiter(WebDriver driver){
-        return new WebDriverWait(driver,30);
+    public static WebDriverWait getWaiter(WebDriver driver) {
+        return new WebDriverWait(driver, 30);
     }
 
+    public JavascriptExecutor getJavaExecutor() {
+        return (JavascriptExecutor) driver;
+    }
 }
