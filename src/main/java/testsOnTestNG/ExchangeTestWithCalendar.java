@@ -21,7 +21,7 @@ import javax.xml.bind.JAXBException;
 import java.text.ParseException;
 
 //test #REQ-202
-//@Listeners(TestResultsListener.class)
+@Listeners(TestResultsListener.class)
 public class ExchangeTestWithCalendar {
     private static final Logger log = LogManager.getLogger(ExchangeTestWithCalendar.class);
     private static String maxCurrentDate;
@@ -57,9 +57,9 @@ public class ExchangeTestWithCalendar {
 
         log.info("The select day before the current day "+currentDate+" from the calendar");
 
-        SeleniumUtils.sleep(1);
+        SeleniumUtils.sleep(2);
         cursMD.getCurrentDate().sendKeys(DateUtils.getYesterdayDateString("dd"));
-        SeleniumUtils.sleep(1);
+        SeleniumUtils.sleep(2);
         cursMD.selectCurrencyCodeTO(code2);
 
         ValCurs valCurs = ConversionManager.getValCursByDate(ConversionManager.parseDateFromWebElement(cursMD.getCurrentDate()));
@@ -74,13 +74,13 @@ public class ExchangeTestWithCalendar {
 
         log.info("Going back to the current date "+currentDate);
 
-        SeleniumUtils.sleep(1);
+        SeleniumUtils.sleep(2);
         cursMD.getCurrentDate().sendKeys(DateUtils.changeDateFormat(currentDate,"dd.MM.yyyy","dd"));
         cursMD.selectCurrencyCodeTO(code2);
 
         log.info("Trying to select Date without data from bnm which should be higher than -> "+maxCurrentDate);
 
-        SeleniumUtils.sleep(1);
+        SeleniumUtils.sleep(2);
         cursMD.getCurrentDate().sendKeys(DateUtils.getDateAfterDateString(1,maxCurrentDate,"dd.MM.yyyy","ddMM"));
         cursMD.selectCurrencyCodeTO(code2);
         log.info("Was selected this date "+DateUtils.getDateAfterDateString(1,maxCurrentDate,"dd.MM.yyyy","dd.MM.yyyy"));
