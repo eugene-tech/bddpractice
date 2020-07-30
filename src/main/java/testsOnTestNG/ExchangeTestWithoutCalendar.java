@@ -10,9 +10,6 @@ import listeners.TestResultsListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.assertj.core.api.Assertions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.ITest;
-import org.testng.ITestResult;
 import org.testng.annotations.*;
 import properties.GeneralProperties;
 import properties.LinksProperties;
@@ -22,14 +19,14 @@ import java.text.ParseException;
 
 //test #REQ-202
 @Listeners(TestResultsListener.class)
-public class ExchangeTestWithCalendar {
-    private static final Logger log = LogManager.getLogger(ExchangeTestWithCalendar.class);
+public class ExchangeTestWithoutCalendar {
+    private static final Logger log = LogManager.getLogger(ExchangeTestWithoutCalendar.class);
     private static String maxCurrentDate;
 
-    @DataProvider(name ="test-data")
+    @DataProvider(name = "test-data")
     public Object[][] dataProviderMethod() {
         return new Object[][]{
-                {"MDL","USD"}
+                {"MDL", "USD"}
         };
     }
 
@@ -41,30 +38,27 @@ public class ExchangeTestWithCalendar {
         maxCurrentDate = ValCursManager.checkMaxCurrentDate();
     }
 
-
     @Test(dataProvider = "test-data")
     public void exchangeTestWithCalendar(String code1, String code2) throws ParseException, JAXBException {
         CursMD cursMD = CursMD.init(SeleniumUtils.getInstance().getDriver());
-        log.info("<-----We have bnm data until "+maxCurrentDate+"----->");
+        log.info("<-----We have bnm data until " + maxCurrentDate + "----->");
         cursMD.selectCurrencyCodeFROM(code1);
         SeleniumUtils.sleep(1);
         cursMD.selectCurrencyCodeTO(code2);
 
-
-
         String currentDate = ConversionManager.parseDateFromWebElement(cursMD.getCurrentDate());
         ValCurs valCursCurrent = ConversionManager.getValCursByDate(currentDate);
 
-        log.info("The select day before the current day "+currentDate+" from the calendar");
+        log.info("The select day before the current day " + currentDate + " from the calendar");
 
-        SeleniumUtils.sleep(2);
-        cursMD.getCurrentDate().sendKeys(DateUtils.getYesterdayDateString("dd"));
-        SeleniumUtils.sleep(2);
+        SeleniumUtils.sleep(1);
+        cursMD.getCurrentDate().sendKeys(DateUtils.getYesterdayDateString("ddMM"));
+        SeleniumUtils.sleep(1);
         cursMD.selectCurrencyCodeTO(code2);
 
         ValCurs valCurs = ConversionManager.getValCursByDate(ConversionManager.parseDateFromWebElement(cursMD.getCurrentDate()));
 
-        log.info("Beginning check Exchange from "+code1+" to "+code2+" at date "+cursMD.getCurrentDate().getAttribute(
+        log.info("Beginning check Exchange from " + code1 + " to " + code2 + " at date " + cursMD.getCurrentDate().getAttribute(
                 "value"));
 
         ConversionManager.checkConversionFromMDL(cursMD.getInputBlockForExchangeTO(),
@@ -72,18 +66,19 @@ public class ExchangeTestWithCalendar {
                 cursMD.getInputBlockForExchangeFROM().getAttribute("value"),
                 code2, log);
 
-        log.info("Going back to the current date "+currentDate);
+        log.info("Going back to the current date " + currentDate);
 
         SeleniumUtils.sleep(2);
-        cursMD.getCurrentDate().sendKeys(DateUtils.changeDateFormat(currentDate,"dd.MM.yyyy","dd"));
+        cursMD.getCurrentDate().sendKeys(DateUtils.changeDateFormat(currentDate, "dd.MM.yyyy", "ddMM"));
         cursMD.selectCurrencyCodeTO(code2);
 
-        log.info("Trying to select Date without data from bnm which should be higher than -> "+maxCurrentDate);
+        log.info("Trying to select Date without data from bnm which should be higher than -> " + maxCurrentDate);
+
 
         SeleniumUtils.sleep(2);
-        cursMD.getCurrentDate().sendKeys(DateUtils.getDateAfterDateString(1,maxCurrentDate,"dd.MM.yyyy","ddMM"));
+        cursMD.getCurrentDate().sendKeys(DateUtils.getDateAfterDateString(1, maxCurrentDate, "dd.MM.yyyy", "ddMM"));
         cursMD.selectCurrencyCodeTO(code2);
-        log.info("Was selected this date "+DateUtils.getDateAfterDateString(1,maxCurrentDate,"dd.MM.yyyy","dd.MM.yyyy"));
+        log.info("Was selected this date " + DateUtils.getDateAfterDateString(1, maxCurrentDate, "dd.MM.yyyy", "dd.MM.yyyy"));
 
         Assertions.assertThat(ConversionManager.parseDateFromWebElement(cursMD.getCurrentDate())).isEqualTo(currentDate);
 
@@ -91,9 +86,6 @@ public class ExchangeTestWithCalendar {
                 valCursCurrent,
                 cursMD.getInputBlockForExchangeFROM().getAttribute("value"),
                 code2, log);
-        log.info("As expected current date "+cursMD.getCurrentDate().getAttribute("value")+" was not changed");
-
-
+        log.info("As expected current date " + cursMD.getCurrentDate().getAttribute("value") + " was not changed");
     }
-
 }

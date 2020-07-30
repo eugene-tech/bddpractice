@@ -8,11 +8,15 @@ import java.util.Date;
 public class DateUtils {
     private static SimpleDateFormat simpleDateFormat;
 
-    public static String changeDateFormat(String date, String inputFormat, String outputFormat) throws ParseException {
-        simpleDateFormat = new SimpleDateFormat(inputFormat);
-        Date datE = simpleDateFormat.parse(date);
-        simpleDateFormat.applyPattern(outputFormat);
-        return simpleDateFormat.format(datE);
+    public static String changeDateFormat(String date, String inputFormat, String outputFormat){
+        try {
+            simpleDateFormat = new SimpleDateFormat(inputFormat);
+            Date datE = simpleDateFormat.parse(date);
+            simpleDateFormat.applyPattern(outputFormat);
+            return simpleDateFormat.format(datE);
+        }catch (ParseException ex){
+            return date;
+        }
     }
 
     private static Date yesterday() {
