@@ -1,10 +1,7 @@
 package POMs;
 
-import POMs.Pages.Banks;
-import POMs.Pages.Currencies;
-import POMs.Pages.ExchangeOffices;
+import POMs.Pages.*;
 import POMs.Pages.ExchangeRates.ExchangeRates;
-import POMs.Pages.RatesEvolution;
 import dto.ValCurs;
 import helpers.*;
 import org.apache.commons.lang3.StringUtils;
@@ -29,10 +26,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class CursMD extends AbstractPOM {
     private String currentCode;
@@ -56,14 +50,17 @@ public class CursMD extends AbstractPOM {
     private WebElement currentDate;
     @FindBy(xpath = "//input[@class='chosen-search-input']")
     private WebElement currencyMainPageSearchInput;
+    @FindBy(xpath = "//div[@class='head-menu']/a")
+    private List<WebElement> headMenu;
 
     //other pages
     private List<Page> allPages;
-    private ExchangeRates exchangeRatesPage;
-    private RatesEvolution ratesEvolutionPage;
-    private Banks banks;
-    private Currencies currencies;
-    private ExchangeOffices exchangeOffices;
+    private final ExchangeRates exchangeRatesPage;
+    private final RatesEvolution ratesEvolutionPage;
+    private final Banks banks;
+    private final Currencies currencies;
+    private final ExchangeOffices exchangeOffices;
+    private final RatesWidget ratesWidget;
 
     public CursMD(WebDriver driver) {
         super(driver);
@@ -72,6 +69,7 @@ public class CursMD extends AbstractPOM {
         banks = new Banks(driver);
         currencies = new Currencies(driver);
         exchangeOffices = new ExchangeOffices(driver);
+        ratesWidget = new RatesWidget(driver);
     }
 
     public ExchangeRates getExchangeRatesPage() {
@@ -80,6 +78,10 @@ public class CursMD extends AbstractPOM {
 
     public RatesEvolution getRatesEvolutionPage() {
         return ratesEvolutionPage;
+    }
+
+    public RatesWidget getRatesWidgetPage() {
+        return ratesWidget;
     }
 
     public static CursMD init(WebDriver driver) {
@@ -146,12 +148,13 @@ public class CursMD extends AbstractPOM {
         allPages.add(banks);
         allPages.add(currencies);
         allPages.add(exchangeOffices);
+        allPages.add(ratesWidget);
         return allPages;
     }
 
     public void checkAllPagesLanguage(List<String> menuExpected, List<String> pageTabHeader, List<String> pageTitle) {
         getAllPages().forEach(pages -> {
-            if (!(pages instanceof ExchangeRates)) {
+            if (!(pages instanceof ExchangeRates) && !(pages instanceof RatesEvolution)) {
                 log.info("Clicked on this menu option -> " + pages.getMenuTitle());
                 pages.openThisPage();
                 Assertions.assertThat(pageTitle).contains(pages.getTitle().trim());
@@ -160,6 +163,23 @@ public class CursMD extends AbstractPOM {
                 log.info("Page tab header -> " + pages.getPageHeader() + " | Menu name -> " + pages.getMenuTitle() +
                         " and PAGE TITLE  -> " + pages.getTitle() + " was successfully translated");
             }
+        });
+    }
+
+    public void checkAllPagesHeaderMenu(String... pageHeaderMenuExpected) {
+        getAllPages().forEach(pages -> {
+            log.info("Open this page -> " + pages.getMenuTitle());
+            pages.openThisPage();
+            log.info("Starting to check if these headers " + Arrays.toString(pageHeaderMenuExpected) + " are " +
+                    "presented on " +
+                    "this page <"
+                    + pages.getMenuTitle() + ">");
+            log.info("Actual -> " + SeleniumUtils
+                    .parseTextFromWebElementToCollection(headMenu, false));
+            log.info("Expected -> " + Arrays.toString(pageHeaderMenuExpected));
+            Assertions.assertThat(Arrays.asList(pageHeaderMenuExpected)).isEqualTo(SeleniumUtils
+                    .parseTextFromWebElementToCollection(headMenu, false));
+            log.info("<---------------------------------------------------->");
         });
     }
 

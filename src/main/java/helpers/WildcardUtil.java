@@ -20,6 +20,10 @@ public class WildcardUtil {
         return WILDCARDS_RANDOM.contains(anySymbol) ? getRandomSymbol() : anySymbol;
     }
 
+    public static String processInteger(String intValue) {
+        return WILDCARDS_RANDOM.contains(intValue) ? getRandomInteger() : intValue;
+    }
+
     private static String getRandomSymbol() {
         char c = (char) (RANDOM.nextInt(26) + 'a');
         return String.valueOf(c);
@@ -27,5 +31,9 @@ public class WildcardUtil {
 
     private static String getRandomDouble() {
         return String.format("%.2f", MIN + RANDOM.nextDouble() * MAX);
+    }
+
+    private static String getRandomInteger() {
+        return String.format("%d", RANDOM.nextInt(MAX) + MIN);
     }
 }

@@ -50,7 +50,6 @@ public class ExchangeTestWithoutCalendar {
         ValCurs valCursCurrent = ConversionManager.getValCursByDate(currentDate);
 
         log.info("The select day before the current day " + currentDate + " from the calendar");
-
         SeleniumUtils.sleep(1);
         cursMD.getCurrentDate().sendKeys(DateUtils.getYesterdayDateString("ddMM"));
         SeleniumUtils.sleep(1);
@@ -74,7 +73,6 @@ public class ExchangeTestWithoutCalendar {
 
         log.info("Trying to select Date without data from bnm which should be higher than -> " + maxCurrentDate);
 
-
         SeleniumUtils.sleep(2);
         cursMD.getCurrentDate().sendKeys(DateUtils.getDateAfterDateString(1, maxCurrentDate, "dd.MM.yyyy", "ddMM"));
         cursMD.selectCurrencyCodeTO(code2);
@@ -86,6 +84,7 @@ public class ExchangeTestWithoutCalendar {
                 valCursCurrent,
                 cursMD.getInputBlockForExchangeFROM().getAttribute("value"),
                 code2, log);
+
         log.info("As expected current date " + cursMD.getCurrentDate().getAttribute("value") + " was not changed");
     }
 }

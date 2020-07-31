@@ -7,9 +7,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import properties.GeneralProperties;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -17,9 +19,13 @@ public class SeleniumUtils {
 
     private final WebDriver driver;
     private static SeleniumUtils seleniumUtils;
+    private ActionsManager actionsManager;
     private static final Logger log = LogManager.getLogger(SeleniumUtils.class);
 
-    private SeleniumUtils(WebDriver driver) {this.driver = driver;}
+    private SeleniumUtils(WebDriver driver) {
+        this.driver = driver;
+        actionsManager = new ActionsManager(driver);
+    }
 
     public void alert(String alertMsg) {
         ((JavascriptExecutor) driver).executeScript("alert(\"" + alertMsg + "\")");
@@ -84,5 +90,9 @@ public class SeleniumUtils {
 
     public JavascriptExecutor getJavaExecutor() {
         return (JavascriptExecutor) driver;
+    }
+
+    public ActionsManager getActionsManager(){
+        return this.actionsManager;
     }
 }
