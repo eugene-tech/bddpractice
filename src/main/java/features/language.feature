@@ -1,5 +1,5 @@
 Feature: Language change
-
+  #@testTag
   Scenario Outline: Language changed at menu (#REQ-101)
     Given main page is opened
     When user changes language to '<lang>'

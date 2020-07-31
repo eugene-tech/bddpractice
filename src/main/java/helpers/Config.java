@@ -19,7 +19,8 @@ public class Config {
 
     static {
         log.info("Loading properties located at <" + CONFIG_PATH + ">");
-        try (InputStream inputStream = new FileInputStream(CONFIG_PATH)) {
+        try (InputStream inputStream =
+                     Config.class.getClassLoader().getResourceAsStream(CONFIG_PATH)) {
             props.load(inputStream);
         } catch (IOException ignored) {}
     }

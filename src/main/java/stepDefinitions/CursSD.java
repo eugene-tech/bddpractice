@@ -54,6 +54,5 @@ public class CursSD {
     @After
     public void closeDriver(Scenario sc) {
         SeleniumUtils.getInstance().alert("Test " + sc.getStatus().toUpperCase() + ", driver will be closed in a few seconds.....");
-        SeleniumUtils.sleep(2);
     }
 }
