@@ -1,12 +1,36 @@
-Feature: Language change
+# language: ru
+Функционал: Изменение языка
 
-  Scenario Outline: Language changed at menu (#REQ-101)
-    Given main page is opened
-    When user changes language to '<lang>'
-    Then menu translates to chosen language and consists of '<links>'
-    And tab name changes to '<tab>'
-    Examples:
-      | lang    | links                                                                                   | tab                      |
+  @testTag
+  Структура сценария: Изменения языка в меню (#REQ-101)
+    Допустим главная страница открыта
+    Если пользователь меняет язык на '<язык>'
+    То меню отображается на выбранном языке и состоит из ссылок '<ссылки>'
+    К тому же название страницы меняется на '<название>'
+    Примеры:
+      | язык    | ссылки                                                                                  | название                 |
       | Русский | Эволюция курсов, Конвертер, Курсы валют, Банки, Валютные кассы, Валюты                  | Curs.md - Курсы валют    |
       | English | Rates evolution, Convertor, Exchange rates, Banks, Exchange offices, Currencies         | Curs.md - Exchange rates |
       | Română  | Grafic evolutii, Convertor valutar, Curs valutar, Bănci, Case de schimb valutar, Valute | Curs.md - Curs valutar   |
+
+  Структура сценария: Изменения языка в окне выбора валюты (#REQ-102)
+    Допустим главная страница открыта
+    Если пользователь меняет язык на '<язык>'
+    И отрывает окно выбора валют
+    Тогда окно выбора валют меняется на '<язык>' в соответствии с bnm
+    Примеры:
+      | язык    |
+      | Русский |
+      | English |
+      | Română  |
+
+  Структура сценария: Изменения языка в таблице официального курса валют (#REQ-103)
+    Допустим главная страница открыта
+    Если пользователь меняет язык на '<язык>'
+    И отрывает страницу с официальным курсом валют
+    Тогда курс валют меняется на '<язык>' в соответствии с bnm
+    Примеры:
+      | язык    |
+      | Русский |
+      | English |
+      | Română  |
